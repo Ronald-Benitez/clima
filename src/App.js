@@ -24,7 +24,7 @@ function App() {
       luz: Math.floor(Math.random() * (100 - 0)) + 0,
       gas: Math.floor(Math.random() * (100 - 0)) + 0,
       fecha: fecha,
-      hora: hora,
+      hora: moment().format("HH:mm:ss"),
     });
   };
 
@@ -183,7 +183,7 @@ function App() {
             <li className="list-group-item d-flex justify-content-between align-items-center">
               Hora
               <span className="badge bg-warning mx-1 fw-light">
-                {moment(sensores[0].hora, "HH:mm:ss").format("LT")}
+                {sensores[0].hora}
               </span>
             </li>
             <li className="list-group-item d-flex justify-content-between align-items-center">
