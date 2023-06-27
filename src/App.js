@@ -1,15 +1,17 @@
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { app } from "./firebaseApp";
 import { getDatabase, ref, onValue, set } from "firebase/database";
 import moment from "moment/moment";
 import "moment/locale/es";
 import { VictoryLine, VictoryChart, VictoryLabel } from "victory";
+import toast, { Toaster } from "react-hot-toast";
 
 function App() {
   const [sensores, setSensores] = useState([]);
   const [fecha, setFecha] = useState(moment().format("YYYY-MM-DD"));
   const [hora, setHora] = useState(moment().format("HH:mm:ss"));
+  const audioRef = useRef(null);
 
   const base = getDatabase(app);
 
@@ -38,7 +40,7 @@ function App() {
           .reverse()
           .slice(0, 6)
       );
-      console.log(sensores[0]);
+
       cargarGraficos();
     });
   }, []);
@@ -169,6 +171,54 @@ function App() {
     );
   };
 
+  const handleAudio = () => {
+    let renderAudio = false;
+
+    if (sensores.length > 0) {
+      if (sensores[0].temperatura > 30) {
+        toast.error("Temperatura alta");
+        renderAudio = true;
+      }
+      if (sensores[0].humedad > 80) {
+        toast.error("Humedad alta");
+        renderAudio = true;
+      }
+      if (sensores[0].humedad_tierra > 80) {
+        toast.error("Humedad de tierra alta");
+        renderAudio = true;
+      }
+      if (sensores[0].lluvia > 80) {
+        toast.error("Lluvia alta");
+        renderAudio = true;
+      }
+      if (sensores[0].luz > 80) {
+        toast.error("Luz alta");
+        renderAudio = true;
+      }
+      if (sensores[0].gas > 80) {
+        toast.error("Gas alta");
+        renderAudio = true;
+      }
+      if (sensores[0].vibracion > 80) {
+        toast.error("Vibración alta");
+        renderAudio = true;
+      }
+      if (sensores[0].agua > 80) {
+        toast.error("Nivel de agua alto");
+        renderAudio = true;
+      }
+
+      if (renderAudio) {
+
+          const audio = new Audio(
+            "https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"
+          );
+          audio.play().catch((err) => console.log(err));
+        
+      }
+    }
+  };
+
   const cargarSensores = () => {
     if (sensores.length > 0) {
       return (
@@ -269,6 +319,8 @@ function App() {
           </div>
         </div>
       </main>
+      {handleAudio()}
+      <Toaster />
     </div>
   );
 }
